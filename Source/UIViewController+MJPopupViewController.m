@@ -10,7 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "MJPopupBackgroundView.h"
 
-#define kPopupModalAnimationDuration 0.35
+#define kPopupModalAnimationDuration 0.5
 #define kMJSourceViewTag 23941
 #define kMJPopupViewTag 23942
 #define kMJBackgroundViewTag 23943
@@ -28,6 +28,8 @@
 #pragma mark Public
 
 @implementation UIViewController (MJPopupViewController)
+
+static CGSize popoverOffset;
 
 - (void)presentPopupViewController:(UIViewController*)popupViewController animationType:(MJPopupViewAnimation)animationType
 {
@@ -207,26 +209,26 @@
     CGRect popupEndRect;
     switch (animationType) {
         case MJPopupViewAnimationSlideBottomTop:
-            popupEndRect = CGRectMake((sourceSize.width - popupSize.width) / 2, 
-                                      -popupSize.height, 
+            popupEndRect = CGRectMake(((sourceSize.width - popupSize.width) / 2) + popoverOffset.width,
+                                      -popupSize.height + popoverOffset.height,
                                       popupSize.width, 
                                       popupSize.height);
             break;
         case MJPopupViewAnimationSlideBottomBottom:
-            popupEndRect = CGRectMake((sourceSize.width - popupSize.width) / 2, 
-                                      sourceSize.height, 
+            popupEndRect = CGRectMake(((sourceSize.width - popupSize.width) / 2) + popoverOffset.width,
+                                      sourceSize.height + popoverOffset.height, 
                                       popupSize.width, 
                                       popupSize.height);
             break;
         case MJPopupViewAnimationSlideLeftRight:
-            popupEndRect = CGRectMake(sourceSize.width, 
-                                      popupView.frame.origin.y, 
+            popupEndRect = CGRectMake(sourceSize.width + popoverOffset.width, 
+                                      popupView.frame.origin.y  + popoverOffset.height, 
                                       popupSize.width, 
                                       popupSize.height);
             break;
         default:
-            popupEndRect = CGRectMake(-popupSize.width, 
-                                      popupView.frame.origin.y, 
+            popupEndRect = CGRectMake(-popupSize.width + popoverOffset.width, 
+                                      popupView.frame.origin.y + popoverOffset.height, 
                                       popupSize.width, 
                                       popupSize.height);
             break;
@@ -249,8 +251,8 @@
     // Generating Start and Stop Positions
     CGSize sourceSize = sourceView.bounds.size;
     CGSize popupSize = popupView.bounds.size;
-    CGRect popupEndRect = CGRectMake((sourceSize.width - popupSize.width) / 2, 
-                                     (sourceSize.height - popupSize.height) / 2,
+    CGRect popupEndRect = CGRectMake(((sourceSize.width - popupSize.width) / 2) + popoverOffset.width,
+                                     ((sourceSize.height - popupSize.height) / 2) + popoverOffset.height,
                                      popupSize.width, 
                                      popupSize.height);
     
@@ -275,6 +277,16 @@
         [popupView removeFromSuperview];
         [overlayView removeFromSuperview];
     }];
+}
+
+#pragma mark - Popover Offset
+
+- (CGSize)popoverOffset {
+    return popoverOffset;
+}
+
+- (void)setPopoverOffset:(CGSize)offset {
+    popoverOffset = offset;
 }
 
 

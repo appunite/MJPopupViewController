@@ -20,5 +20,6 @@ typedef enum {
 
 - (void)presentPopupViewController:(UIViewController*)popupViewController animationType:(MJPopupViewAnimation)animationType;
 - (void)dismissPopupViewControllerWithanimationType:(MJPopupViewAnimation)animationType;
+- (void)setPopoverOffset:(CGSize)popoverOffset;
 
 @end
